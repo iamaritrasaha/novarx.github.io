@@ -53,6 +53,8 @@ html {
     color: var(--text-primary);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 body {
@@ -61,6 +63,7 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     position: relative;
+    width: 100%;
 }
 
 .container {
@@ -2085,6 +2088,12 @@ body {
         grid-template-columns: 1fr;
         gap: 3rem;
         text-align: center;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        left: 0 !important;
+        width: 100% !important;
     }
     
     .hero-text p {
