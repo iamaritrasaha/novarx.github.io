@@ -1529,6 +1529,7 @@ class NovaRxApp {
         
         // Reset Form
         document.getElementById('adminAddMedicineForm').reset();
+        this.logActivity('admin_hrik', 'Hrik', 'Admin', `Added new medicine to catalog: "${name}" (${dosage}) - Price: ₹${price}`);
         this.showToast(`${name} added to pharmacy catalog!`, 'success');
     }
 
@@ -1562,12 +1563,17 @@ class NovaRxApp {
 
         // Reset Form
         document.getElementById('adminAddDoctorForm').reset();
+        this.logActivity('admin_hrik', 'Hrik', 'Admin', `Registered new consultant in registry: "${name}" (${specialty}) - Fee: ₹${fee}`);
         this.showToast(`${name} registered in system!`, 'success');
     }
 
     handleAdminDeleteAppointment(aptId) {
+        const apt = this.appointments.find(a => a.id !== aptId);
         this.appointments = this.appointments.filter(a => a.id !== aptId);
         this.saveAppointments();
+        if (apt) {
+            this.logActivity('admin_hrik', 'Hrik', 'Admin', `Cancelled patient reservation ID: #${aptId} (Patient: "${apt.patientName}" with ${apt.doctorName})`);
+        }
         this.showToast('Appointment registration cancelled', 'info');
     }
 
@@ -1576,6 +1582,7 @@ class NovaRxApp {
         if (order) {
             order.status = 'Shipped / Out for Delivery';
             this.saveOrders();
+            this.logActivity('admin_hrik', 'Hrik', 'Admin', `Dispatched sales order ID: #${ordId} to customer`);
             this.showToast(`Order #${ordId} status updated to Shipped`, 'success');
         }
     }
@@ -1590,6 +1597,7 @@ class NovaRxApp {
         if (med) {
             med.price = price;
             this.saveMedicines();
+            this.logActivity('admin_hrik', 'Hrik', 'Admin', `Modified medicine price: "${med.name}" to ₹${price.toFixed(2)}`);
             this.renderAdminPanel();
             this.showToast(`Updated ${med.name} price to ₹${price.toFixed(2)}`, 'success');
         }
@@ -1605,6 +1613,7 @@ class NovaRxApp {
         if (doc) {
             doc.consultationFee = fee;
             this.saveDoctors();
+            this.logActivity('admin_hrik', 'Hrik', 'Admin', `Modified consultation fee: "${doc.name}" to ₹${fee}`);
             this.renderAdminPanel();
             this.showToast(`Updated ${doc.name} consultation fee to ₹${fee}`, 'success');
         }
@@ -1615,7 +1624,10 @@ class NovaRxApp {
         this.medicines = this.medicines.filter(m => m.id !== medId);
         this.saveMedicines();
         this.renderAdminPanel();
-        if (med) this.showToast(`Removed ${med.name} from pharmacy inventory`, 'info');
+        if (med) {
+            this.logActivity('admin_hrik', 'Hrik', 'Admin', `Removed medicine from inventory: "${med.name}"`);
+            this.showToast(`Removed ${med.name} from pharmacy inventory`, 'info');
+        }
     }
 
     handleAdminDeleteDoctor(docId) {
@@ -1623,7 +1635,10 @@ class NovaRxApp {
         this.doctors = this.doctors.filter(d => d.id !== docId);
         this.saveDoctors();
         this.renderAdminPanel();
-        if (doc) this.showToast(`Removed ${doc.name} from clinical registry`, 'info');
+        if (doc) {
+            this.logActivity('admin_hrik', 'Hrik', 'Admin', `Removed consultant from registry: "${doc.name}"`);
+            this.showToast(`Removed ${doc.name} from clinical registry`, 'info');
+        }
     }
 
     simulateIncomingActivity() {
@@ -1640,6 +1655,7 @@ class NovaRxApp {
         if (!this.users.some(u => u.email === email)) {
             this.users.push({ name: patName, email: email, mobile: mob, password: 'password' });
             localStorage.setItem('novarx_users', JSON.stringify(this.users));
+            this.logActivity(email, patName, 'Patient', 'Registered new user account (Simulated System Event)');
         }
 
         if (opType === 0) {
@@ -1663,6 +1679,7 @@ class NovaRxApp {
             };
             this.appointments.unshift(booking);
             this.saveAppointments();
+            this.logActivity(email, patName, 'Patient', `Booked appointment with ${doc.name} (${doc.specialty}) on ${dateStr} at ${slot} (Simulated System Event)`);
             this.showToast(`Activity Simulated: ${patName} booked ${doc.name}`, 'success');
         } else {
             const med = this.medicines[Math.floor(Math.random() * this.medicines.length)];
@@ -1684,6 +1701,7 @@ class NovaRxApp {
             };
             this.orders.unshift(order);
             this.saveOrders();
+            this.logActivity(email, patName, 'Patient', `Placed sales order #${order.id} for: "${order.itemsText}". Total: ₹${order.total.toFixed(2)} (Simulated System Event)`);
             this.showToast(`Activity Simulated: ${patName} ordered ${med.name}`, 'success');
         }
     }
@@ -1698,6 +1716,7 @@ class NovaRxApp {
             o.status = 'Shipped / Out for Delivery';
         });
         this.saveOrders();
+        this.logActivity('admin_hrik', 'Hrik', 'Admin', `Dispatched all pending orders in database (Count: ${processingOrders.length})`);
         this.showToast(`Dispatched all ${processingOrders.length} processing orders!`, 'success');
     }
 
@@ -1711,6 +1730,7 @@ class NovaRxApp {
             }
             this.users = this.users.filter(u => u.email !== email);
             localStorage.setItem('novarx_users', JSON.stringify(this.users));
+            this.logActivity('admin_hrik', 'Hrik', 'Admin', `Deleted patient account: "${user.name}" (${user.email})`);
             this.renderAdminPanel();
             this.showToast(`Removed patient ${user.name} from database`, 'info');
         }
@@ -1794,6 +1814,7 @@ class NovaRxApp {
         this.saveDoctors();
         this.renderAdminPanel();
         this.modalOverlay.classList.remove('active');
+        this.logActivity('admin_hrik', 'Hrik', 'Admin', `Updated consultant profile details: "${name}" (${specialty})`);
         this.showToast(`Updated doctor profile: ${name}`, 'success');
     }
     

@@ -2764,6 +2764,42 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
         grid-template-columns: 1fr !important;
         gap: 1.5rem !important;
     }
+
+    #navRoleBadge {
+        display: none !important;
+    }
+
+    .user-profile-nav {
+        padding: 0.4rem !important;
+    }
+
+    .logout-btn-text {
+        display: none !important;
+    }
+
+    #logoutBtn {
+        padding: 0 !important;
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        border-radius: var(--radius-full) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #logoutBtn i {
+        margin: 0 !important;
+    }
+
+    .item-meta-row {
+        flex-wrap: wrap !important;
+        gap: 0.5rem 1rem !important;
+    }
+
+    .user-profile-summary h2 {
+        font-size: 1.35rem !important;
+    }
 }
 
 @media (max-width: 480px) {
