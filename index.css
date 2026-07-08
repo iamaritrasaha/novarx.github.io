@@ -2737,6 +2737,15 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
         width: 95% !important;
         padding: 1.25rem !important;
     }
+
+    .modal-content {
+        padding: 1.25rem !important;
+    }
+
+    .auth-tab {
+        padding: 0.75rem 0.25rem !important;
+        font-size: 0.85rem !important;
+    }
     
     .universal-search-console .search-input-wrapper {
         flex-direction: column;
