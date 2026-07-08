@@ -510,6 +510,17 @@
                                 <!-- Admin global orders list -->
                             </div>
                         </div>
+
+                        <!-- Security & Access Logs Database -->
+                        <div class="dashboard-card" style="margin-top: 2rem;">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="database"></i> System Security & Access Logs Database</h3>
+                                <button class="btn btn-secondary-glass btn-sm" onclick="app.clearAccessLogs()">Clear Database</button>
+                            </div>
+                            <div class="dashboard-list admin-catalog-list" id="adminAccessLogsList" style="max-height: 350px;">
+                                <!-- Dynamic access logs from database -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

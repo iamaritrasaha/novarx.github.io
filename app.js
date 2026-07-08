@@ -210,6 +210,7 @@ class NovaRxApp {
         
         this.selectedSpecialty = 'all';
         this.selectedCategory = 'all';
+        this.accessLogs = JSON.parse(localStorage.getItem('novarx_access_logs')) || [];
 
         this.initDOM();
     }
@@ -240,6 +241,7 @@ class NovaRxApp {
         this.adminMedicinesList = document.getElementById('adminMedicinesList');
         this.adminDoctorsList = document.getElementById('adminDoctorsList');
         this.adminPatientsList = document.getElementById('adminPatientsList');
+        this.adminAccessLogsList = document.getElementById('adminAccessLogsList');
         
         // Admin statistics metrics
         this.adminStatRevenue = document.getElementById('adminStatRevenue');
@@ -549,8 +551,10 @@ class NovaRxApp {
             if (user) {
                 this.currentUser = { name: user.name, email: user.email, role: 'user' };
                 this.showToast(`Welcome back, ${user.name}!`, 'success');
+                this.logActivity(user.email, user.name, 'Patient', 'User successfully authenticated');
             } else {
                 this.showToast('Invalid credentials (email/mobile or password)', 'danger');
+                this.logActivity('guest', 'Guest', 'Guest', `Authentication failed (Invalid login email: "${loginQuery}")`);
                 return;
             }
         } else if (type === 'signUp') {
@@ -581,6 +585,7 @@ class NovaRxApp {
 
             this.currentUser = { name: newUser.name, email: newUser.email, role: 'user' };
             this.showToast(`Account created! Welcome, ${newUser.name}!`, 'success');
+            this.logActivity(newUser.email, newUser.name, 'Patient', 'Registered new user account');
         } else {
             const user = document.getElementById('authAdminUser').value.trim();
             const pass = document.getElementById('authAdminPass').value.trim();
@@ -588,8 +593,10 @@ class NovaRxApp {
             if (user === 'Hrik' && pass === 'hrik') {
                 this.currentUser = { name: 'Hrik', role: 'admin' };
                 this.showToast('Administrator command unlocked', 'success');
+                this.logActivity('admin_hrik', 'Hrik', 'Admin', 'Administrator command access authenticated');
             } else {
                 this.showToast('Invalid administrator credentials!', 'danger');
+                this.logActivity('guest', 'Guest', 'Guest', `Authentication failed (Invalid administrator username: "${user}")`);
                 return;
             }
         }
@@ -606,6 +613,9 @@ class NovaRxApp {
     }
 
     handleLogout() {
+        if (this.currentUser) {
+            this.logActivity(this.currentUser.email || 'admin_hrik', this.currentUser.name, this.currentUser.role === 'admin' ? 'Admin' : 'Patient', 'User logged out');
+        }
         this.currentUser = null;
         localStorage.removeItem('novarx_session');
         this.showToast('Logged out successfully', 'info');
@@ -1145,6 +1155,7 @@ class NovaRxApp {
         this.saveAppointments();
         this.modalOverlay.classList.remove('active');
         
+        this.logActivity(this.currentUser.email, this.currentUser.name, 'Patient', `Booked appointment for "${patientName}" with ${doc.name} (${doc.specialty}) on ${date} at ${slot}`);
         this.showToast('Appointment booked successfully!', 'success');
         this.navigateToTab('dashboard');
     }
@@ -1234,6 +1245,7 @@ class NovaRxApp {
         this.renderCart();
 
         this.modalOverlay.classList.remove('active');
+        this.logActivity(this.currentUser.email, this.currentUser.name, 'Patient', `Placed sales order #${order.id} for: "${order.itemsText}". Total: ₹${order.total.toFixed(2)}`);
         this.showToast('Order placed successfully!', 'success');
         this.navigateToTab('dashboard');
     }
@@ -1477,6 +1489,8 @@ class NovaRxApp {
                 this.adminOrdersList.appendChild(item);
             });
         }
+
+        this.renderAccessLogs();
 
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
@@ -1897,6 +1911,64 @@ class NovaRxApp {
             input.value = query;
             this.triggerUniversalSearch();
         }
+    }
+
+    logActivity(userId, username, role, action, ip = '127.0.0.1') {
+        const timestamp = new Date().toLocaleString();
+        const log = { userId, username, role, action, ip, timestamp };
+        this.accessLogs.push(log);
+        localStorage.setItem('novarx_access_logs', JSON.stringify(this.accessLogs));
+        if (this.currentUser && this.currentUser.role === 'Admin') {
+            this.renderAccessLogs();
+        }
+    }
+
+    renderAccessLogs() {
+        if (!this.adminAccessLogsList) return;
+        this.adminAccessLogsList.innerHTML = '';
+        if (this.accessLogs.length === 0) {
+            this.adminAccessLogsList.innerHTML = `
+                <p style="font-size:0.85rem; color:var(--text-muted); padding:1rem; text-align:center;">No log data entries recorded in database.</p>
+            `;
+        } else {
+            const sortedLogs = [...this.accessLogs].reverse();
+            sortedLogs.forEach(log => {
+                const item = document.createElement('div');
+                item.className = 'admin-catalog-item';
+                item.style.flexDirection = 'column';
+                item.style.alignItems = 'flex-start';
+                item.style.gap = '0.4rem';
+                
+                let actionColor = 'var(--primary)';
+                if (log.action.includes('fail') || log.action.includes('delete') || log.action.includes('Cancel') || log.action.includes('cleared')) {
+                    actionColor = 'var(--danger)';
+                } else if (log.action.includes('Registered') || log.action.includes('authenticated') || log.action.includes('Purchased')) {
+                    actionColor = 'var(--accent)';
+                }
+                
+                item.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; width:100%; font-size:0.8rem; color:var(--text-muted);">
+                        <span><i data-lucide="clock" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></i>${log.timestamp}</span>
+                        <span>IP: ${log.ip}</span>
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--text-primary);">
+                        <strong>${log.username}</strong> (<span style="color:var(--primary); font-size:0.75rem;">${log.role}</span>): 
+                        <span style="color:${actionColor};">${log.action}</span>
+                    </div>
+                `;
+                this.adminAccessLogsList.appendChild(item);
+            });
+        }
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+    clearAccessLogs() {
+        this.accessLogs = [];
+        localStorage.removeItem('novarx_access_logs');
+        this.showToast('Security logs database cleared successfully', 'success');
+        this.renderAccessLogs();
     }
 }
 
