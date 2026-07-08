@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaRx - Premium Liquid Glass Pharmacy & Healthcare</title>
+    <meta name="description" content="Order medicines online, find specialist doctors, and book appointments instantly with NovaRx, your all-in-one healthcare platform.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- Liquid Glass Background Blobs -->
+    <div class="liquid-blob blob-1"></div>
+    <div class="liquid-blob blob-2"></div>
+    <div class="liquid-blob blob-3"></div>
+
+    <!-- App Shell -->
+    <div class="app-container">
+        
+        <!-- Navigation Header -->
+        <header class="app-header">
+            <div class="header-content container">
+                <a href="#home" class="logo" id="logoLink">
+                    <div class="logo-icon">
+                        <i data-lucide="activity"></i>
+                    </div>
+                    <span class="logo-text">Nova<span>Rx</span></span>
+                </a>
+                
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#home" class="nav-link active" data-tab="home"><i data-lucide="home"></i> Home</a></li>
+                        <li><a href="#pharmacy" class="nav-link" data-tab="pharmacy"><i data-lucide="pill"></i> Pharmacy</a></li>
+                        <li><a href="#doctors" class="nav-link" data-tab="doctors"><i data-lucide="stethoscope"></i> Doctors</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <!-- Cart Button -->
+                    <button class="cart-toggle-btn" id="cartToggleBtn" aria-label="Shopping Cart">
+                        <i data-lucide="shopping-bag"></i>
+                        <span class="cart-badge" id="cartBadge">0</span>
+                    </button>
+
+                    <!-- Auth Button Area -->
+                    <div id="authBtnArea">
+                        <button class="btn btn-secondary-glass" id="navLoginBtn">
+                            <i data-lucide="log-in"></i> Sign In
+                        </button>
+                    </div>
+                    <div id="userProfileNav" class="user-profile-nav" style="display: none;" onclick="app.handleProfileClick()" title="View Account Dashboard">
+                        <div class="user-nav-avatar"><i data-lucide="user"></i></div>
+                        <span class="role-badge" id="navRoleBadge">User</span>
+                    </div>
+                    <button class="btn btn-secondary-glass" id="logoutBtn" style="display: none;" title="Log Out" onclick="app.handleLogout();">
+                        <i data-lucide="log-out"></i> Logout
+                    </button>
+
+                    <button class="btn btn-primary-glass nav-book-btn" id="headerBookBtn" onclick="app.navigateToTab('doctors')">
+                        Book Appointment
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="app-main container">
+            
+            <!-- Home / Hero Section -->
+            <section id="home-section" class="tab-content active">
+                <div class="hero-section">
+                    <div class="hero-text">
+                        <span class="badge badge-accent">Your Health, Our Priority</span>
+                        <h1>Modern healthcare, simplified for you.</h1>
+                        <p>Order prescription medications, explore specialized doctors, and manage appointments seamlessly online. Your complete healthcare hub, right at your fingertips.</p>
+                        
+                        <!-- Symptom Diagnostics Matcher Widget -->
+                        <div class="symptom-checker-widget">
+                            <p class="checker-title"><i data-lucide="stethoscope"></i> Tap a symptom for instant doctor matching:</p>
+                            <div class="symptom-tags">
+                                <button class="symptom-tag" onclick="app.matchSymptom('fever')">Fever & Cold</button>
+                                <button class="symptom-tag" onclick="app.matchSymptom('headache')">Migraine</button>
+                                <button class="symptom-tag" onclick="app.matchSymptom('skin')">Skin Acne</button>
+                                <button class="symptom-tag" onclick="app.matchSymptom('joints')">Joint Pain</button>
+                            </div>
+                            <div class="diagnostic-result-card" id="symptomMatchResult"></div>
+                        </div>
+
+                        <div class="hero-actions">
+                            <button class="btn btn-primary-glass btn-lg" onclick="app.navigateToTab('pharmacy')">
+                                <i data-lucide="shopping-cart"></i> Shop Medicines
+                            </button>
+                            <button class="btn btn-secondary-glass btn-lg" onclick="app.navigateToTab('doctors')">
+                                <i data-lucide="calendar"></i> Find Specialist
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-image-container">
+                        <div class="hero-3d-stack">
+                            <!-- Background glow mesh -->
+                            <div class="glow-mesh"></div>
+                            
+                            <!-- Pharmacy Card -->
+                            <div class="stack-card card-pharmacy" onclick="app.navigateToTab('pharmacy')">
+                                <div class="stack-card-header">
+                                    <span class="service-pill">Pharmacy</span>
+                                    <i data-lucide="pill" class="service-icon-glow"></i>
+                                </div>
+                                <h4>Order Prescriptions</h4>
+                                <p>Settle medicine bills securely via UPI. Instant express shipping.</p>
+                                <div class="card-action-hint">Explore Catalog <i data-lucide="arrow-right"></i></div>
+                            </div>
+                            
+                            <!-- Consult Card -->
+                            <div class="stack-card card-consult" onclick="app.navigateToTab('doctors')">
+                                <div class="stack-card-header">
+                                    <span class="service-pill" style="background:rgba(99,102,241,0.1); color:#818cf8; border-color:rgba(99,102,241,0.2);">Consult</span>
+                                    <i data-lucide="calendar" class="service-icon-glow" style="color:#818cf8; filter:drop-shadow(0 0 8px rgba(99,102,241,0.3));"></i>
+                                </div>
+                                <h4>Schedule Specialist</h4>
+                                <p>50+ verified clinicians across multiple departments.</p>
+                                <div class="card-action-hint">Book Slot <i data-lucide="arrow-right"></i></div>
+                            </div>
+                            
+                            <!-- Dashboard Card -->
+                            <div class="stack-card card-dashboard" onclick="app.navigateToTab('dashboard')">
+                                <div class="stack-card-header">
+                                    <span class="service-pill" style="background:rgba(245,158,11,0.1); color:#fbbf24; border-color:rgba(245,158,11,0.2);">Dashboard</span>
+                                    <i data-lucide="user" class="service-icon-glow" style="color:#fbbf24; filter:drop-shadow(0 0 8px rgba(245,158,11,0.3));"></i>
+                                </div>
+                                <h4>Patient Dashboard</h4>
+                                <p>Track pending pharmacy shipments & slot logs.</p>
+                                <div class="card-action-hint">Manage Orders <i data-lucide="arrow-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Universal Hero Search Console -->
+                <div class="universal-search-console">
+                    <div class="search-input-wrapper" style="display:flex; gap:0.75rem;">
+                        <div style="position:relative; flex:1;">
+                            <i data-lucide="search" class="search-icon" style="z-index: 10;"></i>
+                            <input type="text" id="universalSearchInput" placeholder="Search medicines, specialist doctors, or symptoms instantly..." onkeypress="app.handleUniversalSearch(event)" style="padding-right: 1.5rem;">
+                        </div>
+                        <button class="btn btn-primary-glass" onclick="app.triggerUniversalSearch()" style="height:50px; padding:0 2rem; border-radius:var(--radius-md);">Search Hub</button>
+                    </div>
+                    <div class="search-tags-row">
+                        <span>Popular:</span>
+                        <button class="search-tag-link" onclick="app.quickSearch('Paracetamol')">Paracetamol</button>
+                        <button class="search-tag-link" onclick="app.quickSearch('Cardiology')">Cardiology</button>
+                        <button class="search-tag-link" onclick="app.quickSearch('Rajesh')">Dr. Rajesh Mehta</button>
+                        <button class="search-tag-link" onclick="app.quickSearch('General Physician')">General Physician</button>
+                    </div>
+                </div>
+
+                <!-- Bento Grid Features Section -->
+                <div class="bento-grid">
+                    <div class="bento-card bento-card-large">
+                        <div class="bento-badge">Certified Pharmacy</div>
+                        <h3>Supervised Catalog</h3>
+                        <p>Every prescription and over-the-counter medicine is validated by senior Indian pharmacists before delivery.</p>
+                        <div class="bento-visual">
+                            <i data-lucide="pill" class="glowing-bento-icon"></i>
+                            <span class="bento-stat">100% Secure</span>
+                        </div>
+                    </div>
+                    <div class="bento-card bento-card-small">
+                        <div class="bento-badge" style="background:rgba(99, 102, 241, 0.1); color:#818cf8; border-color:rgba(99, 102, 241, 0.2);">Clinicians</div>
+                        <h3>50+ Experts</h3>
+                        <p>Top-rated clinicians across multiple departments.</p>
+                        <div class="rating-badge"><i data-lucide="star" style="width:12px; height:12px; fill:#f59e0b; stroke:none;"></i> 4.9 Rating</div>
+                    </div>
+                    <div class="bento-card bento-card-small">
+                        <div class="bento-badge" style="background:rgba(245, 158, 11, 0.1); color:#fbbf24; border-color:rgba(245, 158, 11, 0.2);">Logistics</div>
+                        <h3>Express Delivery</h3>
+                        <p>Same-day doorstep delivery across Delhi NCR, Mumbai & Bengaluru.</p>
+                        <span class="delivery-time">Within 4 Hours</span>
+                    </div>
+                    <div class="bento-card bento-card-medium">
+                        <div class="bento-badge" style="background:rgba(16, 185, 129, 0.1); color:#34d399; border-color:rgba(16, 185, 129, 0.2);">Fulfillment</div>
+                        <h3>UPI Payment Settlements</h3>
+                        <p>Settle consultation fees and medicine bills securely via UPI, NetBanking, or Credit/Debit Cards.</p>
+                        <div class="payment-logos">
+                            <span class="payment-tag">UPI</span>
+                            <span class="payment-tag">Card</span>
+                            <span class="payment-tag">COD</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Medicines Preview -->
+                <div class="section-header-row" style="margin-top: 5rem;">
+                    <h2>Popular Medicines</h2>
+                    <a href="#pharmacy" class="text-link" onclick="app.navigateToTab('pharmacy')">View All <i data-lucide="arrow-right"></i></a>
+                </div>
+                <div class="featured-medicines-grid" id="featuredMedicinesList">
+                    <!-- Dynamic Featured Medicines Go Here -->
+                </div>
+
+                <!-- Featured Doctors Preview -->
+                <div class="section-header-row" style="margin-top: 5rem;">
+                    <h2>Our Specialist Doctors</h2>
+                    <a href="#doctors" class="text-link" onclick="app.navigateToTab('doctors')">Find Doctor <i data-lucide="arrow-right"></i></a>
+                </div>
+                <div class="featured-doctors-grid" id="featuredDoctorsList">
+                    <!-- Dynamic Featured Doctors Go Here -->
+                </div>
+
+                <!-- Testimonials Section -->
+                <div class="section-header-row" style="margin-top: 5rem;">
+                    <h2>Loved by Patients</h2>
+                    <p style="color:var(--text-secondary); margin:0;">Real experiences from verified users</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="user-nav-avatar" style="width:34px; height:34px; font-weight:700;">AV</div>
+                            <div>
+                                <h4>Aman Verma</h4>
+                                <div style="color:#fbbf24; font-size:0.75rem; display:flex; align-items:center; gap:2px;">
+                                    <i data-lucide="star" style="width:10px; height:10px; fill:#fbbf24; stroke:none;"></i> 5.0 Rating
+                                </div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">"NovaRx has simplified ordering medicines. The UPI payment interface was seamless, and the delivery arrived in Gurugram within 4 hours!"</p>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="user-nav-avatar" style="width:34px; height:34px; font-weight:700; background:rgba(99, 102, 241, 0.2); border-color:#818cf8; color:#818cf8;">SR</div>
+                            <div>
+                                <h4>Sneha Roy</h4>
+                                <div style="color:#fbbf24; font-size:0.75rem; display:flex; align-items:center; gap:2px;">
+                                    <i data-lucide="star" style="width:10px; height:10px; fill:#fbbf24; stroke:none;"></i> 4.9 Rating
+                                </div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">"Consulting with Dr. Anjali Desai was a fantastic experience. Booking was fast and the consultation fee was extremely reasonable!"</p>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="user-nav-avatar" style="width:34px; height:34px; font-weight:700; background:rgba(245, 158, 11, 0.2); border-color:#fbbf24; color:#fbbf24;">KP</div>
+                            <div>
+                                <h4>Karan Patel</h4>
+                                <div style="color:#fbbf24; font-size:0.75rem; display:flex; align-items:center; gap:2px;">
+                                    <i data-lucide="star" style="width:10px; height:10px; fill:#fbbf24; stroke:none;"></i> 5.0 Rating
+                                </div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">"Managing family prescriptions is so much easier. Highly recommend the pharmacy filters and certified catalog features."</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pharmacy Section -->
+            <section id="pharmacy-section" class="tab-content">
+                <div class="pharmacy-header">
+                    <div class="search-input-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="medicineSearch" placeholder="Search medicines by name, category, or symptoms...">
+                    </div>
+                    <div class="specialty-tabs-container" id="medicineCategoryTabs" style="margin-top: 1.25rem;">
+                        <!-- Dynamic Category Tabs Go Here -->
+                    </div>
+                </div>
+
+                <div class="medicine-main-layout">
+                    <!-- Medicines Grid -->
+                    <div class="medicines-grid" id="medicinesGrid">
+                        <!-- Dynamic Medicine Cards Go Here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Doctors Section -->
+            <section id="doctors-section" class="tab-content">
+                <div class="doctors-header">
+                    <div class="search-input-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="doctorSearch" placeholder="Search doctors by name or department...">
+                    </div>
+                    <div class="specialty-tabs-container" id="specialtyFilterTabs" style="margin-top: 1.25rem;">
+                        <!-- Dynamic Specialty Filter Buttons Go Here -->
+                    </div>
+                </div>
+
+                <div class="doctors-grid" id="doctorsGrid">
+                    <!-- Dynamic Doctor Cards Go Here -->
+                </div>
+            </section>
+
+            <!-- Patient Dashboard Section -->
+            <section id="dashboard-section" class="tab-content">
+                <div class="dashboard-header">
+                    <div class="user-profile-summary">
+                        <div class="profile-avatar"><i data-lucide="user"></i></div>
+                        <div>
+                            <h2 id="dashboardWelcomeText">Welcome back, Guest</h2>
+                            <p>Manage your orders and appointments in one place</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Column 1: Appointments -->
+                    <div class="dashboard-card">
+                        <div class="card-header-row">
+                            <h3><i data-lucide="calendar"></i> Your Booked Appointments</h3>
+                        </div>
+                        <div class="dashboard-list" id="dashboardAppointmentsList">
+                            <!-- Dynamic appointments list -->
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Order History -->
+                    <div class="dashboard-card">
+                        <div class="card-header-row">
+                            <h3><i data-lucide="package"></i> Your Order History</h3>
+                        </div>
+                        <div class="dashboard-list" id="dashboardOrdersList">
+                            <!-- Dynamic orders list -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Panel Section -->
+            <section id="admin-section" class="tab-content">
+                <div class="dashboard-header">
+                    <div class="user-profile-summary">
+                        <div class="profile-avatar admin-avatar"><i data-lucide="shield-alert"></i></div>
+                        <div>
+                            <h2>Administrator Command Center</h2>
+                            <p>Global inventory controls, reservations, and sales transactions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Sales and Statistics Metrics Dashboard -->
+                <div class="analytics-metrics-row">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i data-lucide="trending-up"></i></div>
+                        <div class="metric-info">
+                            <span class="metric-label">Total Revenue</span>
+                            <h3 id="adminStatRevenue">₹0.00</h3>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon"><i data-lucide="users"></i></div>
+                        <div class="metric-info">
+                            <span class="metric-label">Registered Patients</span>
+                            <h3 id="adminStatPatients">0</h3>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon"><i data-lucide="heart"></i></div>
+                        <div class="metric-info">
+                            <span class="metric-label">Booked Appointments</span>
+                            <h3 id="adminStatAppointments">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-grid-layout">
+                    <!-- Inventory Management Cards -->
+                    <div class="admin-sidebar-forms">
+                        <!-- Add Medicine Form -->
+                        <div class="dashboard-card admin-form-card">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="plus-circle"></i> Add New Medicine</h3>
+                            </div>
+                            <form id="adminAddMedicineForm" class="booking-form" onsubmit="app.handleAdminAddMedicine(event)">
+                                <div class="form-group">
+                                    <label for="adminMedName">Medicine Name</label>
+                                    <input type="text" id="adminMedName" required placeholder="e.g., Aspirin Cardio">
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminMedCategory">Category</label>
+                                    <select id="adminMedCategory">
+                                        <option value="Pain Relief">Pain Relief</option>
+                                        <option value="Vitamins">Vitamins & Supplements</option>
+                                        <option value="Cardiology">Heart & Blood Pressure</option>
+                                        <option value="Respiratory">Cold & Allergy</option>
+                                        <option value="Diabetes">Diabetes Care</option>
+                                        <option value="Digestive">Digestive Health</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminMedPrice">Price (₹)</label>
+                                    <input type="number" step="1" min="1" id="adminMedPrice" required placeholder="e.g., 120">
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminMedDosage">Dosage Strength</label>
+                                    <input type="text" id="adminMedDosage" required placeholder="e.g., 100mg">
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminMedDesc">Description</label>
+                                    <input type="text" id="adminMedDesc" required placeholder="Short description of the product">
+                                </div>
+                                <button type="submit" class="btn btn-primary-glass btn-block">Add to Shop</button>
+                            </form>
+                        </div>
+
+                        <!-- Add Doctor Form -->
+                        <div class="dashboard-card admin-form-card" style="margin-top: 2rem;">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="user-plus"></i> Add New Doctor</h3>
+                            </div>
+                            <form id="adminAddDoctorForm" class="booking-form" onsubmit="app.handleAdminAddDoctor(event)">
+                                <div class="form-group">
+                                    <label for="adminDocName">Doctor Full Name</label>
+                                    <input type="text" id="adminDocName" required placeholder="e.g., Dr. Robert Chen">
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminDocSpecialty">Specialty Department</label>
+                                    <select id="adminDocSpecialty">
+                                        <option value="Cardiology">Cardiology</option>
+                                        <option value="Pediatrics">Pediatrics</option>
+                                        <option value="Neurology">Neurology</option>
+                                        <option value="Orthopedics">Orthopedics</option>
+                                        <option value="Dermatology">Dermatology</option>
+                                        <option value="General Physician">General Physician</option>
+                                        <option value="MD Internal Medicine">MD Internal Medicine</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminDocExp">Years of Experience</label>
+                                    <input type="text" id="adminDocExp" required placeholder="e.g., 10 years">
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminDocFee">Consultation Fee (₹)</label>
+                                    <input type="number" min="10" id="adminDocFee" required placeholder="e.g., 500">
+                                </div>
+                                <button type="submit" class="btn btn-primary-glass btn-block">Register Doctor</button>
+                            </form>
+                        </div>
+
+                        <!-- Automation & Simulation Card -->
+                        <div class="dashboard-card admin-form-card" style="margin-top: 2rem;">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="cpu"></i> Automation & Simulator</h3>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:0.75rem; padding:1.25rem 0 0.5rem 0;">
+                                <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.25rem;">Automate patient booking, order creation, and ship dispatch logs to simulate high-traffic usage.</p>
+                                <button class="btn btn-primary-glass btn-block btn-sm" onclick="app.simulateIncomingActivity()">
+                                    <i data-lucide="play"></i> Simulate Incoming Activity
+                                </button>
+                                <button class="btn btn-secondary-glass btn-block btn-sm" onclick="app.autoProcessAllOrders()">
+                                    <i data-lucide="check-circle"></i> Auto-Ship All Orders
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Global Transactions & Registries View -->
+                    <div class="admin-data-views">
+                        <!-- Medicines Catalog Management -->
+                        <div class="dashboard-card">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="pill"></i> Medicines Catalog Management</h3>
+                            </div>
+                            <div class="dashboard-list admin-catalog-list" id="adminMedicinesList">
+                                <!-- Dynamic Medicines list with delete and inline price edit -->
+                            </div>
+                        </div>
+
+                        <!-- Doctors Registry Management -->
+                        <div class="dashboard-card" style="margin-top: 2rem;">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="stethoscope"></i> Doctors Registry Management</h3>
+                            </div>
+                            <div class="dashboard-list admin-catalog-list" id="adminDoctorsList">
+                                <!-- Dynamic Doctors list with delete and inline fee edit -->
+                            </div>
+                        </div>
+
+                        <!-- Registered Patients Management -->
+                        <div class="dashboard-card" style="margin-top: 2rem;">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="users"></i> Registered Patients Management</h3>
+                            </div>
+                            <div class="dashboard-list admin-catalog-list" id="adminPatientsList">
+                                <!-- Dynamic registered users list with delete -->
+                            </div>
+                        </div>
+
+                        <!-- Appointments Logs -->
+                        <div class="dashboard-card" style="margin-top: 2rem;">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="calendar"></i> Global Appointment Log</h3>
+                            </div>
+                            <div class="dashboard-list" id="adminAppointmentsList">
+                                <!-- Admin global appointments list -->
+                            </div>
+                        </div>
+
+                        <!-- Order Logs -->
+                        <div class="dashboard-card" style="margin-top: 2rem;">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="shopping-bag"></i> Global Sales Orders</h3>
+                            </div>
+                            <div class="dashboard-list" id="adminOrdersList">
+                                <!-- Admin global orders list -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="container footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i data-lucide="activity"></i>
+                        </div>
+                        <span class="logo-text">Nova<span>Rx</span></span>
+                    </div>
+                    <p>Providing premium digital healthcare services and high-quality medicines directly to your home.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home" onclick="app.navigateToTab('home')">Home</a></li>
+                        <li><a href="#pharmacy" onclick="app.navigateToTab('pharmacy')">Medicines</a></li>
+                        <li><a href="#doctors" onclick="app.navigateToTab('doctors')">Consult Doctor</a></li>
+                        <li><a href="#dashboard" onclick="app.navigateToTab('dashboard')">My Account</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Support</h4>
+                    <p><i data-lucide="mail"></i> support@novarx.com</p>
+                    <p><i data-lucide="phone"></i> 1800-123-4567 (Toll-Free)</p>
+                    <p><i data-lucide="map-pin"></i> 452 Health Park Way, DLF Cyber City, Gurugram, Haryana - 122002</p>
+                </div>
+            </div>
+            <div class="footer-bottom container">
+                <p>&copy; 2026 NovaRx Inc. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <!-- Cart Sidebar Drawer -->
+        <div class="cart-drawer-overlay" id="cartOverlay"></div>
+        <aside class="cart-drawer" id="cartDrawer">
+            <div class="cart-drawer-header">
+                <h3><i data-lucide="shopping-cart"></i> Your Cart</h3>
+                <button class="close-btn" id="closeCartBtn" aria-label="Close Cart">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="cart-drawer-body" id="cartDrawerBody">
+                <!-- Dynamic cart items go here -->
+            </div>
+            <div class="cart-drawer-footer" id="cartDrawerFooter">
+                <div class="cart-totals">
+                    <div class="cart-total-row">
+                        <span>Subtotal</span>
+                        <span id="cartSubtotal">₹0.00</span>
+                    </div>
+                    <div class="cart-total-row">
+                        <span>Shipping</span>
+                        <span id="cartShipping">FREE</span>
+                    </div>
+                    <div class="cart-total-row total-row">
+                        <span>Total</span>
+                        <span id="cartTotal">₹0.00</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary-glass btn-block" id="checkoutBtn">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Generic Modal Container (Shared for Medicine Details, Doctor Booking, and Authentication) -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal-container" id="modalContainer">
+                <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close Modal">
+                    <i data-lucide="x"></i>
+                </button>
+                <div class="modal-content" id="modalContent">
+                    <!-- Dynamic modal content goes here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications Container -->
+        <div class="toast-container" id="toastContainer"></div>
+
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
