@@ -2144,13 +2144,32 @@ body {
 
 @media (max-width: 768px) {
     .header-content {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 0.85rem;
+        padding: 0.85rem 1rem;
         height: auto;
-        padding: 1rem 1.25rem;
-        flex-direction: column;
-        gap: 1rem;
+    }
+    
+    .logo {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+    }
+    
+    .header-actions {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
     
     .main-nav {
+        grid-column: 1 / span 2;
+        grid-row: 2;
         width: 100%;
     }
 
@@ -2205,6 +2224,23 @@ body {
     
     .slots-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .symptom-tags {
+        justify-content: center;
+    }
+
+    .universal-search-console {
+        padding: 1.25rem;
+        margin-bottom: 3.5rem;
+    }
+
+    .testimonials-grid {
+        gap: 1rem;
+    }
+
+    .testimonial-card {
+        padding: 1.25rem;
     }
 }
 
@@ -2690,5 +2726,11 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     .doctors-grid {
         grid-template-columns: 1fr !important;
         gap: 1.5rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 0.85rem !important;
     }
 }
