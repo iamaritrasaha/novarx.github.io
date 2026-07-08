@@ -2173,6 +2173,10 @@ body {
         width: 100%;
     }
 
+    .nav-book-btn {
+        display: none !important;
+    }
+
     .main-nav ul {
         display: flex;
         flex-wrap: nowrap;
@@ -2483,12 +2487,12 @@ input[type=number] {
 @keyframes authHeaderFadeIn {
     0% {
         opacity: 0;
-        transform: translateY(-20px) scale(0.82) rotate(-0.5deg);
-        filter: blur(15px);
+        transform: translateY(-3px) scale(0.97);
+        filter: blur(4px);
     }
     100% {
         opacity: 1;
-        transform: translateY(0) scale(1) rotate(0deg);
+        transform: translateY(0) scale(1);
         filter: blur(0);
     }
 }
@@ -2496,7 +2500,7 @@ input[type=number] {
 .user-profile-nav,
 #authBtnArea,
 #logoutBtn {
-    animation: authHeaderFadeIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation: authHeaderFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Premium Liquid Glass Date Picker & Calendar Styling */
