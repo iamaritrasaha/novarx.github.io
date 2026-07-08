@@ -2175,6 +2175,110 @@ body {
         align-items: center;
         gap: 0.75rem !important;
     }
+
+    #navRoleBadge {
+        display: none !important;
+    }
+
+    .cart-toggle-btn {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        border-radius: var(--radius-full) !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .cart-toggle-btn i {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    .cart-badge {
+        right: 0px !important;
+        top: 0px !important;
+        font-size: 0.65rem !important;
+        min-width: 15px !important;
+        height: 15px !important;
+        padding: 0 2px !important;
+        border-width: 1px !important;
+    }
+
+    .user-profile-nav {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        padding: 0 !important;
+        border-radius: var(--radius-full) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .user-nav-avatar {
+        width: 24px !important;
+        height: 24px !important;
+        margin: 0 !important;
+        border: none !important;
+        background: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .user-nav-avatar i {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    .logout-btn-text {
+        display: none !important;
+    }
+
+    #logoutBtn {
+        padding: 0 !important;
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        border-radius: var(--radius-full) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #logoutBtn i {
+        margin: 0 !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    .signin-btn-text {
+        display: none !important;
+    }
+
+    #navLoginBtn {
+        padding: 0 !important;
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        border-radius: var(--radius-full) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #navLoginBtn i {
+        margin: 0 !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    #authBtnArea {
+        display: inline-flex !important;
+    }
     
     .main-nav {
         grid-column: 1 / span 2;
@@ -2767,106 +2871,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
     #navRoleBadge {
         display: none !important;
-    }
-
-    .cart-toggle-btn {
-        width: 38px !important;
-        height: 38px !important;
-        min-width: 38px !important;
-        border-radius: var(--radius-full) !important;
-        padding: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    .cart-toggle-btn i {
-        width: 16px !important;
-        height: 16px !important;
-    }
-
-    .cart-badge {
-        right: 0px !important;
-        top: 0px !important;
-        font-size: 0.65rem !important;
-        min-width: 15px !important;
-        height: 15px !important;
-        padding: 0 2px !important;
-        border-width: 1px !important;
-    }
-
-    .user-profile-nav {
-        width: 38px !important;
-        height: 38px !important;
-        min-width: 38px !important;
-        padding: 0 !important;
-        border-radius: var(--radius-full) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: rgba(255, 255, 255, 0.05) !important;
-    }
-
-    .user-nav-avatar {
-        width: 24px !important;
-        height: 24px !important;
-        margin: 0 !important;
-        border: none !important;
-        background: none !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    .user-nav-avatar i {
-        width: 16px !important;
-        height: 16px !important;
-    }
-
-    .logout-btn-text {
-        display: none !important;
-    }
-
-    #logoutBtn {
-        padding: 0 !important;
-        width: 38px !important;
-        height: 38px !important;
-        min-width: 38px !important;
-        border-radius: var(--radius-full) !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    #logoutBtn i {
-        margin: 0 !important;
-        width: 16px !important;
-        height: 16px !important;
-    }
-
-    .signin-btn-text {
-        display: none !important;
-    }
-
-    #navLoginBtn {
-        padding: 0 !important;
-        width: 38px !important;
-        height: 38px !important;
-        min-width: 38px !important;
-        border-radius: var(--radius-full) !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    #navLoginBtn i {
-        margin: 0 !important;
-        width: 16px !important;
-        height: 16px !important;
-    }
-
-    #authBtnArea {
-        display: inline-flex !important;
     }
 
     .item-meta-row {
