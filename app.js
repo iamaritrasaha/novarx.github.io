@@ -195,22 +195,73 @@ class NovaRxApp {
         }
         localStorage.setItem('novarx_doctors', JSON.stringify(this.doctors));
 
-        this.cart = JSON.parse(localStorage.getItem('novarx_cart')) || [];
-        this.appointments = JSON.parse(localStorage.getItem('novarx_appointments')) || [];
-        this.orders = JSON.parse(localStorage.getItem('novarx_orders')) || [];
+        // Cart data
+        let storedCart = [];
+        try {
+            storedCart = JSON.parse(localStorage.getItem('novarx_cart'));
+            if (!Array.isArray(storedCart)) storedCart = [];
+        } catch (e) {
+            storedCart = [];
+        }
+        this.cart = storedCart;
+
+        // Appointments data
+        let storedAppts = [];
+        try {
+            storedAppts = JSON.parse(localStorage.getItem('novarx_appointments'));
+            if (!Array.isArray(storedAppts)) storedAppts = [];
+        } catch (e) {
+            storedAppts = [];
+        }
+        this.appointments = storedAppts;
+
+        // Orders data
+        let storedOrders = [];
+        try {
+            storedOrders = JSON.parse(localStorage.getItem('novarx_orders'));
+            if (!Array.isArray(storedOrders)) storedOrders = [];
+        } catch (e) {
+            storedOrders = [];
+        }
+        this.orders = storedOrders;
         
         // Session State (Guest, User, Admin)
-        this.currentUser = JSON.parse(localStorage.getItem('novarx_session')) || null;
+        let storedSession = null;
+        try {
+            storedSession = JSON.parse(localStorage.getItem('novarx_session'));
+        } catch (e) {
+            storedSession = null;
+        }
+        this.currentUser = storedSession;
         
         // Registered Users Database
-        this.users = JSON.parse(localStorage.getItem('novarx_users')) || [
-            { name: 'John Doe', email: 'john@gmail.com', password: 'password', mobile: '9876543210' }
-        ];
+        let storedUsers = [];
+        try {
+            storedUsers = JSON.parse(localStorage.getItem('novarx_users'));
+            if (!Array.isArray(storedUsers)) storedUsers = [];
+        } catch (e) {
+            storedUsers = [];
+        }
+        if (storedUsers.length === 0) {
+            storedUsers = [
+                { name: 'John Doe', email: 'john@gmail.com', password: 'password', mobile: '9876543210' }
+            ];
+        }
+        this.users = storedUsers;
         localStorage.setItem('novarx_users', JSON.stringify(this.users));
         
         this.selectedSpecialty = 'all';
         this.selectedCategory = 'all';
-        this.accessLogs = JSON.parse(localStorage.getItem('novarx_access_logs')) || [];
+
+        // Access Logs
+        let storedLogs = [];
+        try {
+            storedLogs = JSON.parse(localStorage.getItem('novarx_access_logs'));
+            if (!Array.isArray(storedLogs)) storedLogs = [];
+        } catch (e) {
+            storedLogs = [];
+        }
+        this.accessLogs = storedLogs;
 
         this.initDOM();
     }
@@ -545,7 +596,9 @@ class NovaRxApp {
 
             const cleanQuery = loginQuery.replace(/[-\s]/g, '');
             const user = this.users.find(u => 
-                (u.email.toLowerCase() === loginQuery || u.mobile.replace(/[-\s]/g, '') === cleanQuery) && 
+                u && 
+                u.email && 
+                (u.email.toLowerCase() === loginQuery || (u.mobile && u.mobile.replace(/[-\s]/g, '') === cleanQuery)) && 
                 u.password === pass
             );
             if (user) {
@@ -573,7 +626,7 @@ class NovaRxApp {
                 return;
             }
 
-            const existing = this.users.find(u => u.email === email);
+            const existing = this.users.find(u => u && u.email === email);
             if (existing) {
                 this.showToast('An account with this email already exists', 'danger');
                 return;
@@ -1939,7 +1992,7 @@ class NovaRxApp {
         const log = { userId, username, role, action, ip, timestamp };
         this.accessLogs.push(log);
         localStorage.setItem('novarx_access_logs', JSON.stringify(this.accessLogs));
-        if (this.currentUser && this.currentUser.role === 'Admin') {
+        if (this.currentUser && this.currentUser.role && this.currentUser.role.toLowerCase() === 'admin') {
             this.renderAccessLogs();
         }
     }
