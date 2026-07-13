@@ -2100,6 +2100,10 @@ class NovaRxApp {
     }
 
     handlePrescriptionUpload(event) {
+        if (!this.currentUser) {
+            this.showToast('Please sign in to upload prescriptions.', 'warning');
+            return;
+        }
         const fileInput = event.target;
         if (!fileInput || !fileInput.files || fileInput.files.length === 0) return;
 
@@ -2172,6 +2176,7 @@ class NovaRxApp {
     }
 
     deletePrescription(id) {
+        if (!this.currentUser) return;
         const pr = this.prescriptions.find(p => p.id === id);
         this.prescriptions = this.prescriptions.filter(p => p.id !== id);
         localStorage.setItem('novarx_prescriptions', JSON.stringify(this.prescriptions));
@@ -2185,6 +2190,7 @@ class NovaRxApp {
     }
 
     orderFromPrescription(id) {
+        if (!this.currentUser) return;
         const pr = this.prescriptions.find(p => p.id === id);
         if (!pr) return;
 
