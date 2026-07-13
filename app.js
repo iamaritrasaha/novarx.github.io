@@ -263,6 +263,26 @@ class NovaRxApp {
         }
         this.accessLogs = storedLogs;
 
+        // Digital prescriptions upload data
+        let storedPrescriptions = [];
+        try {
+            storedPrescriptions = JSON.parse(localStorage.getItem('novarx_prescriptions'));
+            if (!Array.isArray(storedPrescriptions)) storedPrescriptions = [];
+        } catch (e) {
+            storedPrescriptions = [];
+        }
+        this.prescriptions = storedPrescriptions;
+
+        // Theme Management - Auto light/dark depending on hour, overridden by localStorage
+        let activeTheme = localStorage.getItem('novarx_theme');
+        if (!activeTheme) {
+            const hour = new Date().getHours();
+            // Light mode between 6 AM and 6 PM (18:00), Dark mode otherwise
+            activeTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+        }
+        this.currentTheme = activeTheme;
+        document.documentElement.setAttribute('data-theme', this.currentTheme);
+
         this.initDOM();
     }
 
@@ -322,6 +342,9 @@ class NovaRxApp {
         this.navRoleBadge = document.getElementById('navRoleBadge');
         this.logoutBtn = document.getElementById('logoutBtn');
         this.authBtnArea = document.getElementById('authBtnArea');
+        this.dashboardPrescriptionsList = document.getElementById('dashboardPrescriptionsList');
+        this.themeIcon = document.getElementById('themeIcon');
+        this.updateThemeIcon();
 
         // Setup Event Listeners
         this.setupNavigation();
@@ -390,8 +413,16 @@ class NovaRxApp {
     }
 
     setupFilters() {
-        this.medicineSearch.addEventListener('input', () => this.renderPharmacyList());
-        this.doctorSearch.addEventListener('input', () => this.renderDoctorsList());
+        let medTimeout;
+        let docTimeout;
+        this.medicineSearch.addEventListener('input', () => {
+            clearTimeout(medTimeout);
+            medTimeout = setTimeout(() => this.renderPharmacyList(), 200);
+        });
+        this.doctorSearch.addEventListener('input', () => {
+            clearTimeout(docTimeout);
+            docTimeout = setTimeout(() => this.renderDoctorsList(), 200);
+        });
     }
 
     setupCartDrawer() {
@@ -469,6 +500,7 @@ class NovaRxApp {
         localStorage.setItem('novarx_medicines', JSON.stringify(this.medicines));
         this.renderPharmacyList();
         this.renderHomeFeatured();
+        this.renderAdminPanel();
     }
 
     saveDoctors() {
@@ -476,6 +508,7 @@ class NovaRxApp {
         this.renderDoctorsList();
         this.renderSpecialtyTabs();
         this.renderHomeFeatured();
+        this.renderAdminPanel();
     }
 
     updateCartCountBadge() {
@@ -487,11 +520,23 @@ class NovaRxApp {
     // AUTHENTICATION MODAL LOGIC
     openLoginModal() {
         this.modalContent.innerHTML = `
-            <div class="booking-modal-layout">
+            <div class="auth-modal-wrapper">
+                <div class="auth-header">
+                    <div class="auth-logo-badge"><i data-lucide="shield-check"></i></div>
+                    <h3 id="authModalTitle">Welcome back to NovaRx</h3>
+                    <p id="authModalSubtitle">Sign in to manage appointments, track prescriptions, and order medicine.</p>
+                </div>
+                
                 <div class="auth-tabs">
-                    <div class="auth-tab active" id="tabSignIn" onclick="app.switchAuthTab('signIn')">Sign In</div>
-                    <div class="auth-tab" id="tabSignUp" onclick="app.switchAuthTab('signUp')">Register</div>
-                    <div class="auth-tab" id="tabAdmin" onclick="app.switchAuthTab('admin')">Admin Hub</div>
+                    <div class="auth-tab active" id="tabSignIn" onclick="app.switchAuthTab('signIn')">
+                        <i data-lucide="log-in"></i> Sign In
+                    </div>
+                    <div class="auth-tab" id="tabSignUp" onclick="app.switchAuthTab('signUp')">
+                        <i data-lucide="user-plus"></i> Register
+                    </div>
+                    <div class="auth-tab" id="tabAdmin" onclick="app.switchAuthTab('admin')">
+                        <i data-lucide="lock"></i> Admin Gateway
+                    </div>
                 </div>
                 
                 <!-- Patient Sign In Form -->
@@ -549,6 +594,9 @@ class NovaRxApp {
             </div>
         `;
         this.modalOverlay.classList.add('active');
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
 
     switchAuthTab(type) {
@@ -559,6 +607,9 @@ class NovaRxApp {
         const formSignIn = document.getElementById('authSignInForm');
         const formSignUp = document.getElementById('authSignUpForm');
         const formAdmin = document.getElementById('authAdminForm');
+
+        const title = document.getElementById('authModalTitle');
+        const subtitle = document.getElementById('authModalSubtitle');
 
         // Reset active tab styles
         tabSignIn.classList.remove('active');
@@ -573,12 +624,18 @@ class NovaRxApp {
         if (type === 'signIn') {
             tabSignIn.classList.add('active');
             formSignIn.style.display = 'flex';
+            if (title) title.textContent = "Welcome back to NovaRx";
+            if (subtitle) subtitle.textContent = "Sign in to manage appointments, track prescriptions, and order medicine.";
         } else if (type === 'signUp') {
             tabSignUp.classList.add('active');
             formSignUp.style.display = 'flex';
+            if (title) title.textContent = "Join NovaRx Healthcare";
+            if (subtitle) subtitle.textContent = "Create a patient account to instantly book doctors and upload digital prescriptions.";
         } else {
             tabAdmin.classList.add('active');
             formAdmin.style.display = 'flex';
+            if (title) title.textContent = "System Staff Gateway";
+            if (subtitle) subtitle.textContent = "Authorized clinical staff access only. Activity is monitored and logged in security registries.";
         }
     }
 
@@ -635,6 +692,7 @@ class NovaRxApp {
             const newUser = { name, email, mobile, password: pass };
             this.users.push(newUser);
             localStorage.setItem('novarx_users', JSON.stringify(this.users));
+            this.renderAdminPanel();
 
             this.currentUser = { name: newUser.name, email: newUser.email, role: 'user' };
             this.showToast(`Account created! Welcome, ${newUser.name}!`, 'success');
@@ -1380,6 +1438,8 @@ class NovaRxApp {
             });
         }
 
+        this.renderPrescriptions();
+
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
@@ -1708,6 +1768,7 @@ class NovaRxApp {
         if (!this.users.some(u => u.email === email)) {
             this.users.push({ name: patName, email: email, mobile: mob, password: 'password' });
             localStorage.setItem('novarx_users', JSON.stringify(this.users));
+            this.renderAdminPanel();
             this.logActivity(email, patName, 'Patient', 'Registered new user account (Simulated System Event)');
         }
 
@@ -1881,7 +1942,7 @@ class NovaRxApp {
                 (type === 'fever' && tag.textContent.toLowerCase().includes('cold')) ||
                 (type === 'headache' && tag.textContent.toLowerCase().includes('migraine')) ||
                 (type === 'skin' && tag.textContent.toLowerCase().includes('acne')) ||
-                (type === 'joints' && tag.textContent.toLowerCase().includes('joints') || tag.textContent.toLowerCase().includes('pain'))) {
+                (type === 'joints' && (tag.textContent.toLowerCase().includes('joints') || tag.textContent.toLowerCase().includes('pain')))) {
                 tag.classList.add('active');
             } else {
                 tag.classList.remove('active');
@@ -2038,6 +2099,136 @@ class NovaRxApp {
         }
     }
 
+    handlePrescriptionUpload(event) {
+        const fileInput = event.target;
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) return;
+
+        const file = fileInput.files[0];
+        
+        // 5MB Max check
+        if (file.size > 5 * 1024 * 1024) {
+            this.showToast('File is too large. Max size is 5MB.', 'danger');
+            return;
+        }
+
+        const sizeKb = (file.size / 1024).toFixed(1) + ' KB';
+        const timestamp = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+        
+        const newPrescription = {
+            id: 'pr_' + Date.now(),
+            userEmail: this.currentUser.email,
+            name: file.name,
+            size: sizeKb,
+            date: timestamp,
+            status: 'Verified'
+        };
+
+        this.prescriptions.push(newPrescription);
+        localStorage.setItem('novarx_prescriptions', JSON.stringify(this.prescriptions));
+        
+        this.showToast(`Prescription "${file.name}" uploaded successfully!`, 'success');
+        this.logActivity(this.currentUser.email, this.currentUser.name, 'Patient', `Uploaded prescription: "${file.name}"`);
+        
+        this.renderPrescriptions();
+        fileInput.value = '';
+    }
+
+    renderPrescriptions() {
+        if (!this.dashboardPrescriptionsList) return;
+        this.dashboardPrescriptionsList.innerHTML = '';
+
+        if (!this.currentUser) return;
+
+        const myPrescriptions = this.prescriptions.filter(p => p.userEmail === this.currentUser.email);
+
+        if (myPrescriptions.length === 0) {
+            this.dashboardPrescriptionsList.innerHTML = `
+                <div class="cart-empty-state" style="padding:1rem 0; border:none; background:none; box-shadow:none;">
+                    <i data-lucide="info" style="width:20px; height:20px; color:var(--text-muted);"></i>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">No prescriptions uploaded yet.</p>
+                </div>
+            `;
+        } else {
+            myPrescriptions.forEach(pr => {
+                const item = document.createElement('div');
+                item.className = 'prescription-list-item';
+                item.innerHTML = `
+                    <div class="prescription-item-meta">
+                        <h5>${pr.name}</h5>
+                        <span>Uploaded on ${pr.date} (${pr.size}) | <strong style="color:var(--success);">Verified</strong></span>
+                    </div>
+                    <div style="display:flex; gap:0.4rem; align-items:center;">
+                        <button class="btn btn-primary-glass btn-sm" style="padding:2px 8px; height:28px; border-radius:4px; font-size:0.75rem;" onclick="app.orderFromPrescription('${pr.id}')">Order Meds</button>
+                        <button class="btn btn-danger-glass btn-sm" style="padding:2px 8px; height:28px; border-radius:4px; font-size:0.75rem;" onclick="app.deletePrescription('${pr.id}')">Delete</button>
+                    </div>
+                `;
+                this.dashboardPrescriptionsList.appendChild(item);
+            });
+        }
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+    deletePrescription(id) {
+        const pr = this.prescriptions.find(p => p.id === id);
+        this.prescriptions = this.prescriptions.filter(p => p.id !== id);
+        localStorage.setItem('novarx_prescriptions', JSON.stringify(this.prescriptions));
+        
+        if (pr) {
+            this.showToast(`Prescription "${pr.name}" removed from vault.`, 'info');
+            this.logActivity(this.currentUser.email, this.currentUser.name, 'Patient', `Deleted prescription: "${pr.name}"`);
+        }
+        
+        this.renderPrescriptions();
+    }
+
+    orderFromPrescription(id) {
+        const pr = this.prescriptions.find(p => p.id === id);
+        if (!pr) return;
+
+        const prescribedMeds = [
+            { id: 'm1', name: 'Amoxicillin 500mg', price: 180, dosage: '10 Capsules', icon: 'pill' },
+            { id: 'm2', name: 'Paracetamol 650mg', price: 40, dosage: '15 Tablets', icon: 'pill' }
+        ];
+
+        prescribedMeds.forEach(med => {
+            const existingItem = this.cart.find(item => item.id === med.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                this.cart.push({ ...med, quantity: 1 });
+            }
+        });
+
+        this.saveCart();
+        this.renderCart();
+        this.showToast('Prescription medicines added to cart! Open cart to checkout.', 'success');
+        this.logActivity(this.currentUser.email, this.currentUser.name, 'Patient', `Initiated checkout from prescription: "${pr.name}"`);
+    }
+
+    updateThemeIcon() {
+        if (!this.themeIcon) return;
+        if (this.currentTheme === 'dark') {
+            this.themeIcon.setAttribute('data-lucide', 'moon');
+        } else {
+            this.themeIcon.setAttribute('data-lucide', 'sun');
+        }
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+    toggleTheme() {
+        this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', this.currentTheme);
+        localStorage.setItem('novarx_theme', this.currentTheme);
+        this.updateThemeIcon();
+        this.showToast(`Switched to ${this.currentTheme} theme`, 'success');
+        this.logActivity(this.currentUser ? this.currentUser.email : 'guest', this.currentUser ? this.currentUser.name : 'Guest', this.currentUser ? this.currentUser.role : 'Guest', `Switched layout color theme: "${this.currentTheme}"`);
+    }
+
     clearAccessLogs() {
         this.accessLogs = [];
         localStorage.removeItem('novarx_access_logs');
@@ -2046,7 +2237,12 @@ class NovaRxApp {
     }
 }
 
-// Instantiate App on window load
+// Instantiate App on window load and register Service Worker
 window.addEventListener('DOMContentLoaded', () => {
     window.app = new NovaRxApp();
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(() => console.log('Service Worker Registered successfully.'))
+            .catch(err => console.error('Service Worker registration failed:', err));
+    }
 });

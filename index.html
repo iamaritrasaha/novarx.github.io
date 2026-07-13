@@ -11,7 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css?v=3.0">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <!-- Liquid Glass Background Blobs -->
@@ -41,6 +42,11 @@
                 </nav>
                 
                 <div class="header-actions">
+                    <!-- Theme Toggle Button -->
+                    <button class="cart-toggle-btn" id="themeToggleBtn" aria-label="Toggle Color Theme" onclick="app.toggleTheme()" style="margin-right:0.25rem;">
+                        <i data-lucide="sun" id="themeIcon"></i>
+                    </button>
+
                     <!-- Cart Button -->
                     <button class="cart-toggle-btn" id="cartToggleBtn" aria-label="Shopping Cart">
                         <i data-lucide="shopping-bag"></i>
@@ -309,13 +315,35 @@
                 </div>
 
                 <div class="dashboard-grid">
-                    <!-- Column 1: Appointments -->
-                    <div class="dashboard-card">
-                        <div class="card-header-row">
-                            <h3><i data-lucide="calendar"></i> Your Booked Appointments</h3>
+                    <!-- Column 1: Appointments & Prescriptions -->
+                    <div style="display:flex; flex-direction:column; gap:2rem;">
+                        <div class="dashboard-card">
+                            <div class="card-header-row">
+                                <h3><i data-lucide="calendar"></i> Your Booked Appointments</h3>
+                            </div>
+                            <div class="dashboard-list" id="dashboardAppointmentsList">
+                                <!-- Dynamic appointments list -->
+                            </div>
                         </div>
-                        <div class="dashboard-list" id="dashboardAppointmentsList">
-                            <!-- Dynamic appointments list -->
+
+                        <!-- Prescription Vault Card -->
+                        <div class="prescription-vault-card">
+                            <div class="card-header-row" style="margin-bottom:0.75rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem;">
+                                <h3 style="display:flex; align-items:center; gap:0.5rem; font-size:1.25rem; font-weight:750;"><i data-lucide="file-text"></i> Digital Prescription Vault</h3>
+                            </div>
+                            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.25rem;">Upload medical prescriptions to verify order medications instantly.</p>
+                            
+                            <!-- Upload trigger -->
+                            <div class="upload-zone" onclick="document.getElementById('prescriptionFileInput').click()">
+                                <i data-lucide="upload-cloud" style="color:var(--primary);"></i>
+                                <span style="font-weight:650;">Select or drag prescription sheet</span>
+                                <span style="font-size:0.75rem; color:var(--text-muted);">PDF, PNG, JPG (Simulated upload)</span>
+                                <input type="file" id="prescriptionFileInput" style="display:none;" onchange="app.handlePrescriptionUpload(event)">
+                            </div>
+
+                            <div class="dashboard-list" id="dashboardPrescriptionsList" style="margin-top:0.75rem; gap:0.75rem;">
+                                <!-- Dynamically loaded files -->
+                            </div>
                         </div>
                     </div>
 
@@ -552,7 +580,7 @@
                     <h4>Contact Support</h4>
                     <p><i data-lucide="mail"></i> aritrasab@gmail.com</p>
                     <p><i data-lucide="phone"></i> 1800-123-4567 (Toll-Free)</p>
-                    <p><i data-lucide="map-pin"></i> Baurghat, West Bengal, 733101</p>
+                    <p><i data-lucide="map-pin"></i> Balurghat, West Bengal, 733101</p>
                 </div>
             </div>
             <div class="footer-bottom container">
@@ -611,6 +639,6 @@
     </div>
 
     <!-- Application Script -->
-    <script src="app.js"></script>
+    <script src="app.js?v=3.0"></script>
 </body>
 </html>
